@@ -21,7 +21,9 @@ public class MyRealm implements Realm {
     }
 
     @Override
-    public AuthenticationInfo getAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+    public AuthenticationInfo getAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+
+        System.out.println("Myrealm" + token);
         return null;
     }
 }
