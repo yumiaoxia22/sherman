@@ -32,7 +32,7 @@ public class LoginApplicationService {
                 currentUser.login(token);
                 result = resultStatusProcess.process(200, "登录成功，正在为您跳转");
             } catch (AuthenticationException ae) {
-                log.error("登录失败");
+                log.error("--------------------------------->登录失败");
                 result = resultStatusProcess.process(400, "登录不通过");
             }
         } else {

@@ -18,7 +18,7 @@
         <property name="cacheManager" ref="cacheManager"/>
         <!-- Single realm app.  If you have multiple realms, use the 'realms' property instead. -->
         <property name="sessionMode" value="native"/>
-        <property name="realm" ref="myRealm"/>
+        <property name="authenticator" ref="authenticator"/>
     </bean>
     <!--2.配置cacheManage-->
     <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
@@ -31,7 +31,34 @@
         <property name="cacheManagerConfigFile" value="classpath:ehcache.xml"/>
     </bean>
     <!-- 3. 配置realm-->
-    <bean id="myRealm" class="com.idaoben.web.shiro.MyRealm"></bean>
+    <bean id="myRealm" class="com.idaoben.web.shiro.MyRealm">
+        <property name="credentialsMatcher">
+            <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+                <property name="hashAlgorithmName" value="MD5"></property>
+                <property name="hashIterations" value="1024"></property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="secondRealm" class="com.idaoben.web.shiro.SecondRealm">
+        <property name="credentialsMatcher">
+            <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+                <property name="hashAlgorithmName" value="SHA1"></property>
+                <property name="hashIterations" value="1024"></property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="authenticator" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
+        <property name="realms">
+            <list>
+                <ref bean="myRealm"/>
+                <ref bean="secondRealm"/>
+            </list>
+        </property>
+        <property name="authenticationStrategy">
+            <bean class="org.apache.shiro.authc.pam.AllSuccessfulStrategy"></bean>
+        </property>
+    </bean>
     <!--4.配置 LifecycleBeanPostProcessor, 可以自动调用spring生命周期bean的方法-->
     <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
 
@@ -50,7 +77,7 @@
         <property name="securityManager" ref="securityManager"/>
         <property name="loginUrl" value="/login.jsp"/>
         <property name="successUrl" value="/index"/>
-        <property name="unauthorizedUrl" value="/nologin"/>
+        <property name="unauthorizedUrl" value="/unauthrized.jsp"/>
         <!-- The 'filters' property is usually not necessary unless performing an override, which we
              want to do here (make authc point to a PassthruAuthenticationFilter instead of the
              default FormAuthenticationFilter: -->
@@ -60,6 +87,7 @@
                 <!--anon 可以匿名访问
                     authc 必须认证才能访问-->
                 /login = anon
+                /logout = logout
                 /manageUsers = perms[user:manage]
                 /** = authc
             </value>

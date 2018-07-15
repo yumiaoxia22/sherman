@@ -13,7 +13,6 @@
 <body>
 <center>
     <form action="login">
-
         <label>username:</label> <input name="username" type="text"/><br/><br/>
         <label>password:</label> <input name="password" type="password"/><br/><br/>
         <input type="submit" value="submit"/>

@@ -24,7 +24,7 @@ public class LoginController {
         if (status == ResultStatus.SUCCESS) {
             return "index";
         }
-        return "redirect:login";
+        return "redirect:/login";
     }
 
 
